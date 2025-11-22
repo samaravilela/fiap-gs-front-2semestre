@@ -8,8 +8,10 @@ import Home from './pages/Home'
 import About from './pages/About'
 import Features from './pages/Features'
 import Cursos from './pages/Cursos'
+import CursoDetalhes from './pages/CursoDetalhes'
 import MapaRecarga from './pages/MapaRecarga'
 import Oficinas from './pages/Oficinas'
+import OficinaDetalhes from './pages/OficinaDetalhes'
 import ChatFAQ from './components/ChatFAQ'
 import Suporte from './pages/Suporte'
 import AgendarMentoria from './pages/AgendarMentoria'
@@ -63,8 +65,10 @@ export default function App() {
           <Route path="/features" element={<Features />} />
           <Route path="/login" element={<Login />} />
           <Route path="/cursos" element={<ProtectedRoute><Cursos /></ProtectedRoute>} />
+          <Route path="/cursos/:id" element={<ProtectedRoute><CursoDetalhes /></ProtectedRoute>} />
           <Route path="/mapa-recarga" element={<MapaRecarga />} />
           <Route path="/oficinas" element={<Oficinas />} />
+          <Route path="/oficinas/:id" element={<OficinaDetalhes />} />
           <Route path="/faq" element={<ChatFAQ />} />
           <Route path="/suporte" element={<Suporte />} />
           <Route path="/agendar-mentoria" element={<AgendarMentoria />} />

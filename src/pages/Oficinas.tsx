@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { oficinasService } from '../services/oficinasService'
 import type { Oficina } from '../services/oficinasService'
 import Button from '../components/Button'
@@ -141,12 +142,20 @@ export default function Oficinas() {
                   </div>
 
                   <div className="flex gap-3">
+                    {oficina.id && (
+                      <Link
+                        to={`/oficinas/${oficina.id}`}
+                        className="flex-1 btn btn-primary py-2 hover:opacity-90 transition-opacity text-center"
+                      >
+                        Ver Detalhes
+                      </Link>
+                    )}
                     <button 
                       onClick={() => {
                         setEditingOficina(oficina)
                         setShowForm(true)
                       }}
-                      className="flex-1 btn btn-primary py-2 hover:opacity-90 transition-opacity"
+                      className="flex-1 btn btn-secondary py-2 hover:opacity-90 transition-opacity"
                     >
                       Editar
                     </button>

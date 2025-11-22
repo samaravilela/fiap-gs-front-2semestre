@@ -1,6 +1,7 @@
 import { Link, NavLink } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
+import { useTheme } from '../contexts/ThemeContext'
 
 type HeaderProps = {
     className?: string
@@ -9,6 +10,7 @@ type HeaderProps = {
 export default function Header({ className = '' }: HeaderProps) {
     const [open, setOpen] = useState(false)
     const { isAuthenticated, user, logout } = useAuth()
+    const { actualTheme, toggleTheme } = useTheme()
 
     useEffect(() => {
         const onResize = () => { if (window.innerWidth > 1024) setOpen(false) }
@@ -17,7 +19,7 @@ export default function Header({ className = '' }: HeaderProps) {
     }, [])
 
     return (
-        <header className={`bg-black/90 backdrop-blur-md border-b border-cyan-500/30 shadow-[0_2px_20px_rgba(0,102,255,0.3)] ${className}`}>
+        <header className={`bg-black/90 dark:bg-black/90 backdrop-blur-md border-b border-cyan-500/30 dark:border-cyan-500/30 shadow-[0_2px_20px_rgba(0,102,255,0.3)] dark:shadow-[0_2px_20px_rgba(0,102,255,0.3)] ${className}`}>
             <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
                 <Link to="/" className="flex items-center gap-3">
                     <img src="/imagens/LOGO ZHE.png" className="h-16 md:h-20 lg:h-24 w-auto object-contain" alt="Logo Zyntra HE" />
@@ -40,6 +42,15 @@ export default function Header({ className = '' }: HeaderProps) {
                         <li><NavLink to="/oficinas" className="block px-4 py-2 text-cyan-400 hover:bg-cyan-400/20 rounded-lg transition-all">Oficinas</NavLink></li>
                         <li><NavLink to="/faq" className="block px-4 py-2 text-cyan-400 hover:bg-cyan-400/20 rounded-lg transition-all">FAQ</NavLink></li>
                         <li><NavLink to="/equipe" className="block px-4 py-2 text-cyan-400 hover:bg-cyan-400/20 rounded-lg transition-all">Equipe</NavLink></li>
+                        <li>
+                            <button
+                                onClick={toggleTheme}
+                                className="block px-4 py-2 text-cyan-400 hover:bg-cyan-400/20 rounded-lg transition-all"
+                                title={`Alternar para tema ${actualTheme === 'dark' ? 'claro' : 'escuro'}`}
+                            >
+                                {actualTheme === 'dark' ? '☀️' : '🌙'}
+                            </button>
+                        </li>
                         {isAuthenticated ? (
                             <li>
                                 <button 

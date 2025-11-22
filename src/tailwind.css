@@ -1,3 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-primary: #000000;
+    --bg-secondary: #0a0a0a;
+    --bg-tertiary: #001122;
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.8);
+    --border-color: rgba(0, 212, 255, 0.3);
+  }
+  
+  .light {
+    --bg-primary: #f8f9fa;
+    --bg-secondary: #e9ecef;
+    --bg-tertiary: #dee2e6;
+    --text-primary: #000000;
+    --text-secondary: rgba(0, 0, 0, 0.8);
+    --border-color: rgba(0, 0, 0, 0.2);
+  }
+  
+  html, body {
+    height: 100%;
+  }
+  
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%) fixed no-repeat;
+    color: var(--text-primary);
+    min-height: 100vh;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+  
+  select {
+    color-scheme: dark;
+  }
+  
+  .light select {
+    color-scheme: light;
+  }
+  
+  select option {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+  }
+}

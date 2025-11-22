@@ -14,7 +14,7 @@ export default function Footer({
   tagline = "\"Transformando conhecimento técnico em lucro real\""
 }: FooterProps) {
   return (
-    <footer className={`site-footer mt-16 flex flex-col gap-8 bg-black/60 backdrop-blur-md ${className}`}>
+    <footer className={`mt-16 flex flex-col gap-8 bg-black/60 backdrop-blur-md border-t border-cyan-500/30 pt-8 ${className}`}>
       <div className="container grid gap-8 grid-cols-1 md:grid-cols-3">
         <div>
           <h3 className="font-semibold text-lg text-white">{companyName}</h3>
