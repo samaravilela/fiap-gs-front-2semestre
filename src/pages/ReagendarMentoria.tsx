@@ -17,6 +17,7 @@ export default function ReagendarMentoria() {
   const [error, setError] = useState<string | null>(null)
   const [mentoriaSelecionada, setMentoriaSelecionada] = useState<Mentoria | null>(null)
   const [reagendando, setReagendando] = useState(false)
+  const [deletando, setDeletando] = useState<number | null>(null)
   const { register, handleSubmit, formState: { errors } } = useForm<ReagendarFormValues>()
 
   useEffect(() => {
@@ -65,6 +66,27 @@ export default function ReagendarMentoria() {
       alert('Erro ao reagendar mentoria')
     } finally {
       setReagendando(false)
+    }
+  }
+
+  const handleDeletar = async (id: number) => {
+    if (!confirm('Tem certeza que deseja excluir esta mentoria? Esta ação não pode ser desfeita.')) {
+      return
+    }
+    
+    setDeletando(id)
+    try {
+      const response = await mentoriasService.deletar(id)
+      if (response.status === 204 || response.status === 200) {
+        alert('Mentoria excluída com sucesso!')
+        await carregarMentorias()
+      } else {
+        alert(response.message || 'Erro ao excluir mentoria')
+      }
+    } catch (err) {
+      alert('Erro ao excluir mentoria')
+    } finally {
+      setDeletando(null)
     }
   }
 
@@ -202,10 +224,10 @@ export default function ReagendarMentoria() {
             <span className="text-3xl">🔄</span>
           </div>
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-            Reagendar Mentoria
+            Gerenciar Mentorias
           </h1>
           <p className="text-lg text-white/80 max-w-3xl mx-auto mb-8">
-            Selecione uma mentoria da lista abaixo para reagendar para uma nova data
+            Selecione uma mentoria da lista abaixo para reagendar ou excluir
           </p>
           <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-cyan-500 mx-auto rounded-full"></div>
         </div>
@@ -262,13 +284,23 @@ export default function ReagendarMentoria() {
                   </div>
                 </div>
                 
-                <Button
-                  onClick={() => setMentoriaSelecionada(mentoria)}
-                  variant="primary"
-                  className="w-full"
-                >
-                  Reagendar
-                </Button>
+                <div className="flex gap-3 mt-4">
+                  <Button
+                    onClick={() => setMentoriaSelecionada(mentoria)}
+                    variant="primary"
+                    className="flex-1"
+                  >
+                    Reagendar
+                  </Button>
+                  <Button
+                    onClick={() => mentoria.id && handleDeletar(mentoria.id)}
+                    variant="danger"
+                    disabled={deletando === mentoria.id}
+                    className="flex-1"
+                  >
+                    {deletando === mentoria.id ? 'Excluindo...' : 'Excluir'}
+                  </Button>
+                </div>
               </div>
             ))}
           </div>

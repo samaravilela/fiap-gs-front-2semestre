@@ -22,9 +22,9 @@ export default function Button({
   const baseClasses = 'font-semibold rounded-xl transition-all duration-300 hover:shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed'
   
   const variantClasses = {
-    primary: 'bg-primary text-white hover:bg-primary/90',
+    primary: 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white hover:from-blue-500 hover:to-cyan-400 shadow-[0_0_20px_rgba(0,102,255,0.4)] hover:shadow-[0_0_30px_rgba(0,102,255,0.6)]',
     secondary: 'bg-white/10 text-white border border-white/30 hover:bg-white/20',
-    danger: 'bg-gradient-to-r from-white via-pink-200 to-red-600 text-black',
+    danger: 'bg-gradient-to-r from-red-600 to-red-500 text-white hover:from-red-500 hover:to-red-400 shadow-[0_0_20px_rgba(255,51,102,0.4)] hover:shadow-[0_0_30px_rgba(255,51,102,0.6)]',
     success: 'bg-success text-white hover:bg-success/90'
   }
   
