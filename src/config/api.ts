@@ -4,12 +4,11 @@
  */
 export const API_CONFIG = {
   // URL base da API Java
-  // Ajuste conforme necessário (ex: https://seu-backend.com/api)
   BASE_URL:
-    import.meta.env.VITE_API_BASE_URL || 'https://fiap-challenge-sprint5-java-jafi.onrender.com/api',
+    import.meta.env.VITE_API_BASE_URL || 'https://fiap-gs-java-2semestre.onrender.com/api',
   
   // Timeout para requisições (em milissegundos)
-  TIMEOUT: 30000,
+  TIMEOUT: 60000, // Aumentado para 60s devido à latência
   
   // Headers padrão
   DEFAULT_HEADERS: {

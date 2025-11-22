@@ -34,19 +34,56 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    // Simulação de login - em produção, isso faria uma chamada à API
-    // Por enquanto, aceita qualquer email e senha (desenvolvimento)
-    if (email && password) {
-      const userData: User = {
-        id: Date.now().toString(),
-        email,
-        name: email.split('@')[0]
+    try {
+      // Validação básica no frontend
+      if (!email || !email.trim()) {
+        throw new Error('Email é obrigatório')
       }
-      setUser(userData)
-      localStorage.setItem('zyntra_user', JSON.stringify(userData))
-      return true
+      
+      if (!password || password.length < 6) {
+        throw new Error('Senha deve ter no mínimo 6 caracteres')
+      }
+
+      const { usuariosService } = await import('../services/usuariosService')
+      const response = await usuariosService.login({ 
+        email: email.trim(), 
+        senha: password 
+      })
+      
+      if (response.data && response.data.usuario) {
+        const userData: User = {
+          id: response.data.usuario.id?.toString() || Date.now().toString(),
+          email: response.data.usuario.email,
+          name: response.data.usuario.nome || email.split('@')[0]
+        }
+        setUser(userData)
+        localStorage.setItem('zyntra_user', JSON.stringify(userData))
+        if (response.data.token) {
+          localStorage.setItem('zyntra_token', response.data.token)
+        }
+        return true
+      }
+      
+      // Se não retornou dados, verifica se há mensagem de erro
+      if (response.message) {
+        throw new Error(response.message)
+      }
+      
+      return false
+    } catch (err: any) {
+      console.error('Erro no login:', {
+        error: err,
+        message: err.message,
+        stack: err.stack
+      })
+      
+      // Se for erro de conexão, fornece mensagem mais clara
+      if (err.message?.includes('Failed to fetch') || err.message?.includes('conectar')) {
+        throw new Error('Não foi possível conectar com o servidor. Verifique sua conexão e se a API está rodando.')
+      }
+      
+      throw err // Propaga o erro para o componente tratar
     }
-    return false
   }
 
   const logout = () => {

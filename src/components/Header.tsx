@@ -41,19 +41,14 @@ export default function Header({ className = '' }: HeaderProps) {
                         <li><NavLink to="/faq" className="block px-4 py-2 text-cyan-400 hover:bg-cyan-400/20 rounded-lg transition-all">FAQ</NavLink></li>
                         <li><NavLink to="/equipe" className="block px-4 py-2 text-cyan-400 hover:bg-cyan-400/20 rounded-lg transition-all">Equipe</NavLink></li>
                         {isAuthenticated ? (
-                            <>
-                                <li className="lg:ml-4 flex items-center gap-2 px-4 py-2 text-cyan-400">
-                                    <span className="text-sm">Olá, {user?.name}</span>
-                                </li>
-                                <li>
-                                    <button 
-                                        onClick={logout}
-                                        className="block px-4 py-2 text-cyan-400 hover:bg-cyan-400/20 rounded-lg transition-all"
-                                    >
-                                        Sair
-                                    </button>
-                                </li>
-                            </>
+                            <li>
+                                <button 
+                                    onClick={logout}
+                                    className="block px-4 py-2 text-cyan-400 hover:bg-cyan-400/20 rounded-lg transition-all"
+                                >
+                                    Sair
+                                </button>
+                            </li>
                         ) : (
                             <li className="lg:ml-4">
                                 <NavLink to="/login" className="block px-6 py-2 bg-gradient-to-r from-blue-600 to-cyan-500 text-white hover:from-blue-500 hover:to-cyan-400 rounded-lg font-medium shadow-[0_0_20px_rgba(0,102,255,0.4)] transition-all">

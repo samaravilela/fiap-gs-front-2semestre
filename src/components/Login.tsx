@@ -27,8 +27,9 @@ export default function Login() {
       } else {
         setError('Email ou senha inválidos')
       }
-    } catch (err) {
-      setError('Erro ao fazer login. Tente novamente.')
+    } catch (err: any) {
+      // Exibe mensagem de erro específica se disponível
+      setError(err.message || 'Erro ao fazer login. Tente novamente.')
     } finally {
       setLoading(false)
     }

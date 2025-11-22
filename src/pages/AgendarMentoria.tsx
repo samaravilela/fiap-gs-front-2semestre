@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import FormField from '../components/FormField'
 import Button from '../components/Button'
+import { mentoriasService } from '../services/mentoriasService'
+import type { Mentoria } from '../services/mentoriasService'
 
 type FormValues = {
   nomeCompleto: string
@@ -13,12 +15,30 @@ type FormValues = {
 
 export default function AgendarMentoria() {
   const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormValues>()
 
   const onSubmit = async (data: FormValues) => {
-    console.log('Agendamento de mentoria:', data)
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    setSubmitted(true)
+    setError(null)
+    try {
+      const mentoria: Mentoria = {
+        nomeCompleto: data.nomeCompleto,
+        cpf: data.cpf.replace(/\D/g, ''), // Remove caracteres não numéricos
+        email: data.email,
+        telefone: data.telefone,
+        data: data.data,
+      }
+
+      const response = await mentoriasService.criar(mentoria)
+      
+      if (response.data) {
+        setSubmitted(true)
+      } else {
+        setError(response.message || 'Erro ao agendar mentoria. Tente novamente.')
+      }
+    } catch (err) {
+      setError('Erro ao conectar com o servidor. Verifique sua conexão.')
+    }
   }
 
   if (submitted) {
@@ -112,6 +132,12 @@ export default function AgendarMentoria() {
               min={new Date().toISOString().split('T')[0]}
             />
           </FormField>
+
+          {error && (
+            <div className="mt-4 p-4 bg-red-500/20 border border-red-500/50 rounded-xl text-red-200">
+              {error}
+            </div>
+          )}
 
           <Button
             type="submit"
