@@ -104,6 +104,11 @@ class MentoriasService {
     return this.request<Mentoria[]>('/mentorias')
   }
 
+  // READ - Buscar por email
+  async buscarPorEmail(email: string): Promise<ApiResponse<Mentoria[]>> {
+    return this.request<Mentoria[]>(`/mentorias?email=${encodeURIComponent(email)}`)
+  }
+
   // READ - Buscar por ID
   async buscarPorId(id: number): Promise<ApiResponse<Mentoria>> {
     return this.request<Mentoria>(`/mentorias/${id}`)
@@ -115,6 +120,27 @@ class MentoriasService {
       method: 'PUT',
       body: JSON.stringify(mentoria),
     })
+  }
+
+  // REAGENDAR - Reagendar mentoria (atualizar apenas a data)
+  async reagendar(id: number, novaData: string): Promise<ApiResponse<Mentoria>> {
+    // Primeiro busca a mentoria atual
+    const response = await this.buscarPorId(id)
+    if (!response.data) {
+      return {
+        data: null,
+        status: 404,
+        message: 'Mentoria não encontrada'
+      }
+    }
+    
+    // Atualiza apenas a data
+    const mentoriaAtualizada: Mentoria = {
+      ...response.data,
+      data: novaData
+    }
+    
+    return this.atualizar(id, mentoriaAtualizada)
   }
 
   // DELETE - Deletar mentoria

@@ -72,7 +72,7 @@ export default function App() {
           <Route path="/faq" element={<ChatFAQ />} />
           <Route path="/suporte" element={<Suporte />} />
           <Route path="/agendar-mentoria" element={<AgendarMentoria />} />
-          <Route path="/reagendar-mentoria" element={<ReagendarMentoria />} />
+          <Route path="/reagendar-mentoria" element={<ProtectedRoute><ReagendarMentoria /></ProtectedRoute>} />
           <Route path="/empreendedor-recarga" element={<EmpreendedorRecarga />} />
           <Route path="/evento-imersao" element={<EventoImersao />} />
           <Route path="/contato-tutores" element={<ContatoTutores />} />
