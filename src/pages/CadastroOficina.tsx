@@ -8,7 +8,6 @@ type FormValues = {
   cnpj: string
   nomeEmpresa: string
   localizacao: string
-  servicos: string
 }
 
 export default function CadastroOficina() {
@@ -97,14 +96,6 @@ export default function CadastroOficina() {
               {...register('localizacao', { required: 'Localização é obrigatória' })}
               className="w-full p-4 border border-white/30 rounded-xl bg-white/10 text-white placeholder-white/60 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/30 transition-all min-h-[100px] resize-vertical"
               placeholder="Endereço completo: Rua, número, bairro, cidade, estado, CEP"
-            />
-          </FormField>
-
-          <FormField label="Serviços Prestados para Veículos Híbridos e Elétricos" error={errors.servicos} required>
-            <textarea
-              {...register('servicos', { required: 'Descreva os serviços prestados' })}
-              className="w-full p-4 border border-white/30 rounded-xl bg-white/10 text-white placeholder-white/60 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/30 transition-all min-h-[120px] resize-vertical"
-              placeholder="Descreva os serviços que sua oficina oferece para veículos híbridos e elétricos (ex: diagnóstico, reparo de baterias, manutenção preventiva, etc.)"
             />
           </FormField>
 

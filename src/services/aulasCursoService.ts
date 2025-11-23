@@ -1,16 +1,22 @@
 import { API_CONFIG } from '../config/api'
 import type { ApiResponse } from '../types'
 
-export interface Curso {
+export interface AulaCurso {
   id?: number
+  cursoId?: number
+  curso?: {
+    id: number
+    titulo: string
+  }
   titulo: string
   descricao?: string
+  url?: string
   ativo?: string
   dataCriacao?: string
   dataAtualizacao?: string
 }
 
-class CursosService {
+class AulasCursoService {
   private baseUrl: string
 
   constructor() {
@@ -87,40 +93,45 @@ class CursosService {
     }
   }
 
-  // CREATE - Criar curso
-  async criar(curso: Curso): Promise<ApiResponse<Curso>> {
-    return this.request<Curso>('/cursos', {
+  // CREATE - Criar aula
+  async criar(aula: AulaCurso): Promise<ApiResponse<AulaCurso>> {
+    return this.request<AulaCurso>('/aulas-curso', {
       method: 'POST',
-      body: JSON.stringify(curso),
+      body: JSON.stringify(aula),
     })
   }
 
-  // READ - Listar todos
-  async listarTodos(ativos?: boolean): Promise<ApiResponse<Curso[]>> {
-    const endpoint = ativos !== undefined ? `/cursos?ativos=${ativos}` : '/cursos'
-    return this.request<Curso[]>(endpoint)
+  // READ - Listar todas
+  async listarTodos(cursoId?: number, ativos?: boolean): Promise<ApiResponse<AulaCurso[]>> {
+    const params = new URLSearchParams()
+    if (cursoId !== undefined) params.append('cursoId', cursoId.toString())
+    if (ativos !== undefined) params.append('ativos', ativos.toString())
+    
+    const queryString = params.toString()
+    const endpoint = queryString ? `/aulas-curso?${queryString}` : '/aulas-curso'
+    return this.request<AulaCurso[]>(endpoint)
   }
 
   // READ - Buscar por ID
-  async buscarPorId(id: number): Promise<ApiResponse<Curso>> {
-    return this.request<Curso>(`/cursos/${id}`)
+  async buscarPorId(id: number): Promise<ApiResponse<AulaCurso>> {
+    return this.request<AulaCurso>(`/aulas-curso/${id}`)
   }
 
-  // UPDATE - Atualizar curso
-  async atualizar(id: number, curso: Curso): Promise<ApiResponse<Curso>> {
-    return this.request<Curso>(`/cursos/${id}`, {
+  // UPDATE - Atualizar aula
+  async atualizar(id: number, aula: AulaCurso): Promise<ApiResponse<AulaCurso>> {
+    return this.request<AulaCurso>(`/aulas-curso/${id}`, {
       method: 'PUT',
-      body: JSON.stringify(curso),
+      body: JSON.stringify(aula),
     })
   }
 
-  // DELETE - Deletar curso
+  // DELETE - Deletar aula
   async deletar(id: number): Promise<ApiResponse<void>> {
-    return this.request<void>(`/cursos/${id}`, {
+    return this.request<void>(`/aulas-curso/${id}`, {
       method: 'DELETE',
     })
   }
 }
 
-export const cursosService = new CursosService()
+export const aulasCursoService = new AulasCursoService()
 

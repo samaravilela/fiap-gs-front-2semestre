@@ -11,7 +11,6 @@ export default function Oficinas() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [showForm, setShowForm] = useState(false)
-  const [editingOficina, setEditingOficina] = useState<Oficina | null>(null)
 
   useEffect(() => {
     carregarOficinas()
@@ -31,21 +30,6 @@ export default function Oficinas() {
       setError('Erro ao conectar com o servidor')
     } finally {
       setLoading(false)
-    }
-  }
-
-  const handleDeletar = async (id: number) => {
-    if (!confirm('Tem certeza que deseja deletar esta oficina?')) return
-    
-    try {
-      const response = await oficinasService.deletar(id)
-      if (response.status === 204 || response.status === 200) {
-        await carregarOficinas()
-      } else {
-        alert(response.message || 'Erro ao deletar oficina')
-      }
-    } catch (err) {
-      alert('Erro ao deletar oficina')
     }
   }
 
@@ -145,26 +129,11 @@ export default function Oficinas() {
                     {oficina.id && (
                       <Link
                         to={`/oficinas/${oficina.id}`}
-                        className="flex-1 btn btn-primary py-2 hover:opacity-90 transition-opacity text-center"
+                        className="w-full btn btn-primary py-2 hover:opacity-90 transition-opacity text-center"
                       >
                         Ver Detalhes
                       </Link>
                     )}
-                    <button 
-                      onClick={() => {
-                        setEditingOficina(oficina)
-                        setShowForm(true)
-                      }}
-                      className="flex-1 btn btn-secondary py-2 hover:opacity-90 transition-opacity"
-                    >
-                      Editar
-                    </button>
-                    <button 
-                      onClick={() => oficina.id && handleDeletar(oficina.id)}
-                      className="flex-1 btn btn-secondary py-2 hover:opacity-90 transition-opacity"
-                    >
-                      Deletar
-                    </button>
                   </div>
                 </div>
               ))}
@@ -208,10 +177,7 @@ export default function Oficinas() {
           </div>
           <div className="text-center">
             <button 
-              onClick={() => {
-                setEditingOficina(null)
-                setShowForm(true)
-              }}
+              onClick={() => setShowForm(true)}
               className="btn btn-primary px-8 py-3 hover:opacity-90 transition-opacity"
             >
               Cadastrar Minha Oficina
@@ -221,14 +187,10 @@ export default function Oficinas() {
 
         {showForm && (
           <OficinaForm 
-            oficina={editingOficina}
-            onClose={() => {
-              setShowForm(false)
-              setEditingOficina(null)
-            }}
+            oficina={null}
+            onClose={() => setShowForm(false)}
             onSuccess={() => {
               setShowForm(false)
-              setEditingOficina(null)
               carregarOficinas()
             }}
           />

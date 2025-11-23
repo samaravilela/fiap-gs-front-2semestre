@@ -16,7 +16,6 @@ type FormValues = {
   cnpj: string
   nomeEmpresa: string
   localizacao: string
-  servicos: string
   cidade: string
   estado: string
   especialidade: string
@@ -33,7 +32,6 @@ export default function OficinaForm({ oficina, onClose, onSuccess }: OficinaForm
         cnpj: oficina.cnpj || '',
         nomeEmpresa: oficina.nomeEmpresa || '',
         localizacao: oficina.localizacao || '',
-        servicos: oficina.servicos || '',
         cidade: oficina.cidade || '',
         estado: oficina.estado || '',
         especialidade: oficina.especialidade || '',
@@ -49,7 +47,6 @@ export default function OficinaForm({ oficina, onClose, onSuccess }: OficinaForm
         cnpj: data.cnpj.replace(/\D/g, ''),
         nomeEmpresa: data.nomeEmpresa,
         localizacao: data.localizacao,
-        servicos: data.servicos,
         cidade: data.cidade,
         estado: data.estado,
         especialidade: data.especialidade,
@@ -124,15 +121,6 @@ export default function OficinaForm({ oficina, onClose, onSuccess }: OficinaForm
               className="w-full p-3 border border-white/30 rounded-xl bg-white/10 text-white placeholder-white/60 focus:border-cyan-400 focus:outline-none"
               placeholder="Endereço completo"
               rows={3}
-            />
-          </FormField>
-
-          <FormField label="Serviços" error={errors.servicos} required>
-            <textarea
-              {...register('servicos', { required: 'Serviços são obrigatórios' })}
-              className="w-full p-3 border border-white/30 rounded-xl bg-white/10 text-white placeholder-white/60 focus:border-cyan-400 focus:outline-none"
-              placeholder="Descrição dos serviços oferecidos"
-              rows={4}
             />
           </FormField>
 

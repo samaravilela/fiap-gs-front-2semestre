@@ -7,12 +7,11 @@ export interface Oficina {
   cnpj: string
   nomeEmpresa: string
   localizacao: string
-  servicos: string
   cidade?: string
   estado?: string
   especialidade?: string
   avaliacao?: number
-  status?: 'PENDENTE' | 'APROVADA' | 'REJEITADA'
+  status?: 'PENDENTE' | 'APROVADA' | 'REJEITADA' | 'INATIVA'
   dataCriacao?: string
   dataAtualizacao?: string
 }

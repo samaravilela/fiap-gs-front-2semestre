@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { cursosService, type Curso } from '../services/cursosService'
+import { aulasCursoService, type AulaCurso } from '../services/aulasCursoService'
 
 type VideoModulo = {
   id: string
@@ -379,47 +381,53 @@ const categoriasBiblioteca: PdfCategoria[] = [
 export default function Cursos() {
   const [mostrarDetalhesBaterias, setMostrarDetalhesBaterias] = useState(false)
   const [mostrarBiblioteca, setMostrarBiblioteca] = useState(false)
+  const [cursos, setCursos] = useState<Curso[]>([])
+  const [aulas, setAulas] = useState<AulaCurso[]>([])
+  const [cursoSelecionado, setCursoSelecionado] = useState<Curso | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const cursos = [
-    {
-      id: 'vhe-completo',
-      title: 'Curso Completo de VHE',
-      description: 'Capacitação completa em veículos híbridos e elétricos, desde fundamentos até técnicas avançadas de reparação',
-      duration: '120 horas',
-      format: 'Online + Presencial',
-      features: ['Certificação reconhecida', '8 mentorias ao vivo', 'Imersão profissional gratuita', 'Tutor exclusivo'],
-      price: 'Consulte valores'
-    },
-    {
-      id: 'nr10',
-      title: 'Curso de Segurança NR10',
-      description: 'Curso de segurança NR10 com foco em práticas seguras em alta tensão para profissionais que trabalham com VHE',
-      duration: '40 horas',
-      format: 'Online',
-      features: ['Certificação NR10', 'Conteúdo prático', 'Simulações de segurança', 'Material exclusivo'],
-      price: 'Consulte valores'
-    },
-    {
-      id: 'educacao-financeira',
-      title: 'Educação Financeira para Mecânicos',
-      description: 'Palestras e módulos sobre precificação, comportamento profissional e gestão de lucros',
-      duration: '20 horas',
-      format: 'Online',
-      features: ['Gestão financeira', 'Precificação estratégica', 'Análise de lucros', 'Planejamento comercial'],
-      price: 'Consulte valores'
-    },
-    {
-      id: 'baterias-vhe',
-      title: 'Especialização em Baterias VHE',
-      description: 'Curso especializado em diagnóstico, manutenção e reparo de sistemas de baterias de veículos híbridos e elétricos',
-      duration: '60 horas',
-      format: 'Online + Presencial',
-      features: ['Técnicas avançadas', 'Prática em laboratório', 'Certificação especializada', 'Suporte técnico'],
-      price: 'Consulte valores'
+  useEffect(() => {
+    carregarCursos()
+  }, [])
+
+  const carregarCursos = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const response = await cursosService.listarTodos(true) // Apenas cursos ativos
+      if (response.data) {
+        setCursos(response.data)
+      } else {
+        setError(response.message || 'Erro ao carregar cursos')
+      }
+    } catch (err) {
+      setError('Erro ao conectar com o servidor')
+    } finally {
+      setLoading(false)
     }
-  ]
+  }
 
-  if (mostrarDetalhesBaterias) {
+  const carregarAulas = async (cursoId: number) => {
+    try {
+      const response = await aulasCursoService.listarTodos(cursoId, true) // Apenas aulas ativas
+      if (response.data) {
+        setAulas(response.data)
+      }
+    } catch (err) {
+      console.error('Erro ao carregar aulas:', err)
+    }
+  }
+
+  const handleVerDetalhes = async (curso: Curso) => {
+    setCursoSelecionado(curso)
+    if (curso.id) {
+      await carregarAulas(curso.id)
+      setMostrarDetalhesBaterias(true)
+    }
+  }
+
+  if (mostrarDetalhesBaterias && cursoSelecionado) {
     return (
       <section className="py-20 px-4 relative overflow-hidden min-h-screen">
         <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-blue-900/30 to-black/40"></div>
@@ -427,7 +435,11 @@ export default function Cursos() {
         <div className="container max-w-6xl mx-auto relative z-10">
           <div className="mb-8">
             <button
-              onClick={() => setMostrarDetalhesBaterias(false)}
+              onClick={() => {
+                setMostrarDetalhesBaterias(false)
+                setCursoSelecionado(null)
+                setAulas([])
+              }}
               className="flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors mb-6"
             >
               <span className="text-2xl">←</span>
@@ -436,59 +448,73 @@ export default function Cursos() {
             
             <div className="bg-black/40 backdrop-blur-md border border-cyan-500/30 rounded-3xl p-8 mb-8">
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                Especialização em Baterias VHE
+                {cursoSelecionado.titulo}
               </h1>
-              <p className="text-lg text-white/80 mb-6">
-                Curso especializado em diagnóstico, manutenção e reparo de sistemas de baterias de veículos híbridos e elétricos
-              </p>
-              <div className="flex gap-6 text-white/70">
-                <div>
-                  <span className="text-sm">Duração:</span>
-                  <span className="ml-2 font-semibold text-white">60 horas</span>
-                </div>
-                <div>
-                  <span className="text-sm">Formato:</span>
-                  <span className="ml-2 font-semibold text-white">Online + Presencial</span>
-                </div>
-              </div>
+              {cursoSelecionado.descricao && (
+                <p className="text-lg text-white/80 mb-6">
+                  {cursoSelecionado.descricao}
+                </p>
+              )}
             </div>
           </div>
 
-          <div className="space-y-8">
-            {modulosBaterias.map((modulo) => (
-              <div
-                key={modulo.id}
-                className="bg-black/40 backdrop-blur-md border border-cyan-500/30 rounded-3xl p-8"
-              >
+          {aulas.length > 0 ? (
+            <div className="space-y-8">
+              <div className="bg-black/40 backdrop-blur-md border border-cyan-500/30 rounded-3xl p-8">
                 <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">
-                  {modulo.titulo}
+                  Aulas do Curso
                 </h2>
                 
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {modulo.videos.map((video, index) => (
+                  {aulas.map((aula) => (
                     <div
-                      key={video.id}
+                      key={aula.id}
                       className="bg-black/60 backdrop-blur-md border border-cyan-500/20 rounded-2xl p-6 hover:border-cyan-400/50 transition-all duration-300"
                     >
-                      <div className="mb-4">
-                        <video
-                          controls
-                          className="w-full rounded-xl bg-black/40"
-                          preload="metadata"
-                        >
-                          <source src={video.url} type="video/mp4" />
-                          Seu navegador não suporta o elemento de vídeo.
-                        </video>
-                      </div>
-                      <h3 className="text-white font-semibold text-center">
-                        {video.nome}
+                      {aula.url && (
+                        <div className="mb-4">
+                          <div className="relative w-full aspect-video rounded-xl bg-black/40 overflow-hidden">
+                            {aula.url.includes('youtube.com') || aula.url.includes('youtu.be') ? (
+                              <iframe
+                                src={aula.url.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/')}
+                                className="w-full h-full"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                                title={aula.titulo}
+                              />
+                            ) : (
+                              <video
+                                controls
+                                className="w-full h-full"
+                                preload="metadata"
+                              >
+                                <source src={aula.url} type="video/mp4" />
+                                Seu navegador não suporta o elemento de vídeo.
+                              </video>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                      <h3 className="text-white font-semibold text-center mb-2">
+                        {aula.titulo}
                       </h3>
+                      {aula.descricao && (
+                        <p className="text-white/70 text-sm text-center">
+                          {aula.descricao}
+                        </p>
+                      )}
                     </div>
                   ))}
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ) : (
+            <div className="bg-black/40 backdrop-blur-md border border-cyan-500/30 rounded-3xl p-8 text-center">
+              <p className="text-white/80 text-lg">
+                Este curso ainda não possui aulas cadastradas.
+              </p>
+            </div>
+          )}
         </div>
       </section>
     )
@@ -580,6 +606,36 @@ export default function Cursos() {
     )
   }
 
+  if (loading) {
+    return (
+      <section className="py-20 px-4 relative overflow-hidden min-h-screen">
+        <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-blue-900/30 to-black/40"></div>
+        <div className="container max-w-6xl mx-auto relative z-10 text-center">
+          <p className="text-white/80 text-lg">Carregando cursos...</p>
+        </div>
+      </section>
+    )
+  }
+
+  if (error) {
+    return (
+      <section className="py-20 px-4 relative overflow-hidden min-h-screen">
+        <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-blue-900/30 to-black/40"></div>
+        <div className="container max-w-6xl mx-auto relative z-10 text-center">
+          <div className="bg-red-500/20 border border-red-500/50 rounded-xl p-6">
+            <p className="text-red-200">{error}</p>
+            <button
+              onClick={carregarCursos}
+              className="mt-4 btn btn-primary"
+            >
+              Tentar Novamente
+            </button>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <section className="py-20 px-4 relative overflow-hidden min-h-screen">
       <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-blue-900/30 to-black/40"></div>
@@ -599,56 +655,43 @@ export default function Cursos() {
           <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-cyan-500 mx-auto rounded-full"></div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 mb-16">
-          {cursos.map((curso, index) => (
-            <div 
-              key={curso.id}
-              className="bg-black/40 backdrop-blur-md border border-cyan-500/30 rounded-2xl p-8 hover:bg-black/60 hover:border-cyan-400/50 transition-all duration-300"
-            >
-              <h2 className="text-2xl font-bold text-white mb-4">{curso.title}</h2>
-              <p className="text-white/90 mb-6">{curso.description}</p>
-              
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div>
-                  <div className="text-sm text-white/70 mb-1">Duração</div>
-                  <div className="text-white font-semibold">{curso.duration}</div>
-                </div>
-                <div>
-                  <div className="text-sm text-white/70 mb-1">Formato</div>
-                  <div className="text-white font-semibold">{curso.format}</div>
-                </div>
-              </div>
+        {cursos.length > 0 ? (
+          <div className="grid md:grid-cols-2 gap-8 mb-16">
+            {cursos.map((curso) => (
+              <div 
+                key={curso.id}
+                className="bg-black/40 backdrop-blur-md border border-cyan-500/30 rounded-2xl p-8 hover:bg-black/60 hover:border-cyan-400/50 transition-all duration-300"
+              >
+                <h2 className="text-2xl font-bold text-white mb-4">{curso.titulo}</h2>
+                {curso.descricao && (
+                  <p className="text-white/90 mb-6">{curso.descricao}</p>
+                )}
 
-              <div className="mb-6">
-                <div className="text-sm text-white/70 mb-2">Inclui:</div>
-                <ul className="space-y-2">
-                  {curso.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-center gap-2 text-white/90">
-                      <span className="text-blue-400">✓</span>
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
+                <div className="flex items-center justify-between mt-6">
+                  <div className="text-sm text-white/70">
+                    {curso.ativo === 'S' ? (
+                      <span className="text-green-400">● Disponível</span>
+                    ) : (
+                      <span className="text-gray-400">● Indisponível</span>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => handleVerDetalhes(curso)}
+                    className="btn btn-primary px-6 py-2 hover:opacity-90 transition-opacity"
+                  >
+                    Ver Aulas
+                  </button>
+                </div>
               </div>
-
-              <div className="flex items-center justify-between">
-                <div className="text-xl font-bold text-green-300">{curso.price}</div>
-                <button
-                  onClick={() => {
-                    if (curso.id === 'baterias-vhe') {
-                      setMostrarDetalhesBaterias(true)
-                    } else if (curso.id === 'vhe-completo') {
-                      setMostrarBiblioteca(true)
-                    }
-                  }}
-                  className="btn btn-primary px-6 py-2 hover:opacity-90 transition-opacity"
-                >
-                  Saiba Mais
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="bg-black/40 backdrop-blur-md border border-cyan-500/30 rounded-2xl p-8 text-center mb-16">
+            <p className="text-white/80 text-lg">
+              Nenhum curso disponível no momento.
+            </p>
+          </div>
+        )}
 
         <div className="bg-black/40 backdrop-blur-md border border-cyan-500/30 rounded-3xl p-8 mb-16">
           <h2 className="text-3xl font-bold text-white mb-6 text-center">O Que Você Vai Aprender</h2>

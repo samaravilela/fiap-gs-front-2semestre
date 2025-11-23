@@ -1,16 +1,18 @@
 import { API_CONFIG } from '../config/api'
 import type { ApiResponse } from '../types'
 
-export interface Curso {
+export type TipoRecarga = 'AC' | 'DC' | 'AC_DC'
+
+export interface PontoRecarga {
   id?: number
-  titulo: string
-  descricao?: string
-  ativo?: string
+  nome: string
+  endereco: string
+  tipoRecarga?: TipoRecarga
   dataCriacao?: string
   dataAtualizacao?: string
 }
 
-class CursosService {
+class PontosRecargaService {
   private baseUrl: string
 
   constructor() {
@@ -87,40 +89,45 @@ class CursosService {
     }
   }
 
-  // CREATE - Criar curso
-  async criar(curso: Curso): Promise<ApiResponse<Curso>> {
-    return this.request<Curso>('/cursos', {
+  // CREATE - Criar ponto de recarga
+  async criar(ponto: PontoRecarga): Promise<ApiResponse<PontoRecarga>> {
+    return this.request<PontoRecarga>('/pontos-recarga', {
       method: 'POST',
-      body: JSON.stringify(curso),
+      body: JSON.stringify(ponto),
     })
   }
 
   // READ - Listar todos
-  async listarTodos(ativos?: boolean): Promise<ApiResponse<Curso[]>> {
-    const endpoint = ativos !== undefined ? `/cursos?ativos=${ativos}` : '/cursos'
-    return this.request<Curso[]>(endpoint)
+  async listarTodos(tipo?: TipoRecarga, busca?: string): Promise<ApiResponse<PontoRecarga[]>> {
+    const params = new URLSearchParams()
+    if (tipo) params.append('tipo', tipo)
+    if (busca) params.append('busca', busca)
+    
+    const queryString = params.toString()
+    const endpoint = queryString ? `/pontos-recarga?${queryString}` : '/pontos-recarga'
+    return this.request<PontoRecarga[]>(endpoint)
   }
 
   // READ - Buscar por ID
-  async buscarPorId(id: number): Promise<ApiResponse<Curso>> {
-    return this.request<Curso>(`/cursos/${id}`)
+  async buscarPorId(id: number): Promise<ApiResponse<PontoRecarga>> {
+    return this.request<PontoRecarga>(`/pontos-recarga/${id}`)
   }
 
-  // UPDATE - Atualizar curso
-  async atualizar(id: number, curso: Curso): Promise<ApiResponse<Curso>> {
-    return this.request<Curso>(`/cursos/${id}`, {
+  // UPDATE - Atualizar ponto de recarga
+  async atualizar(id: number, ponto: PontoRecarga): Promise<ApiResponse<PontoRecarga>> {
+    return this.request<PontoRecarga>(`/pontos-recarga/${id}`, {
       method: 'PUT',
-      body: JSON.stringify(curso),
+      body: JSON.stringify(ponto),
     })
   }
 
-  // DELETE - Deletar curso
+  // DELETE - Deletar ponto de recarga
   async deletar(id: number): Promise<ApiResponse<void>> {
-    return this.request<void>(`/cursos/${id}`, {
+    return this.request<void>(`/pontos-recarga/${id}`, {
       method: 'DELETE',
     })
   }
 }
 
-export const cursosService = new CursosService()
+export const pontosRecargaService = new PontosRecargaService()
 
