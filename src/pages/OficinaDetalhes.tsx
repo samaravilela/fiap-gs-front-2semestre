@@ -2,18 +2,23 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { oficinasService } from '../services/oficinasService'
 import type { Oficina } from '../services/oficinasService'
+import { oficinaServicosService } from '../services/oficinaServicosService'
+import type { OficinaServico } from '../services/oficinaServicosService'
 import Button from '../components/Button'
 
 export default function OficinaDetalhes() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [oficina, setOficina] = useState<Oficina | null>(null)
+  const [servicos, setServicos] = useState<OficinaServico[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadingServicos, setLoadingServicos] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (id) {
       carregarOficina(Number(id))
+      carregarServicos(Number(id))
     }
   }, [id])
 
@@ -31,6 +36,20 @@ export default function OficinaDetalhes() {
       setError('Erro ao carregar oficina')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const carregarServicos = async (oficinaId: number) => {
+    setLoadingServicos(true)
+    try {
+      const response = await oficinaServicosService.listarTodos(oficinaId, true)
+      if (response.data) {
+        setServicos(response.data)
+      }
+    } catch (err) {
+      console.error('Erro ao carregar serviços:', err)
+    } finally {
+      setLoadingServicos(false)
     }
   }
 
@@ -93,28 +112,68 @@ export default function OficinaDetalhes() {
               </div>
             )}
 
-            {oficina.telefone && (
+            {oficina.nomeEmpresa && (
               <div className="bg-black/60 rounded-xl p-4 border border-cyan-500/20">
-                <p className="text-cyan-400 font-semibold mb-1">Telefone</p>
-                <a 
-                  href={`tel:${oficina.telefone}`}
-                  className="text-white hover:text-cyan-400 hover:underline"
-                >
-                  {oficina.telefone}
-                </a>
+                <p className="text-cyan-400 font-semibold mb-1">Nome da Empresa</p>
+                <p className="text-white">{oficina.nomeEmpresa}</p>
               </div>
             )}
 
-            {oficina.email && (
+            {oficina.status && (
               <div className="bg-black/60 rounded-xl p-4 border border-cyan-500/20">
-                <p className="text-cyan-400 font-semibold mb-1">Email</p>
-                <a 
-                  href={`mailto:${oficina.email}`}
-                  className="text-white hover:text-cyan-400 hover:underline"
-                >
-                  {oficina.email}
-                </a>
+                <p className="text-cyan-400 font-semibold mb-1">Status</p>
+                <p className="text-white capitalize">{oficina.status.toLowerCase()}</p>
               </div>
+            )}
+          </div>
+
+          {oficina.localizacao && (
+            <div className="mb-6">
+              <div className="bg-black/60 rounded-xl p-4 border border-cyan-500/20">
+                <p className="text-cyan-400 font-semibold mb-1">Endereço Completo</p>
+                <p className="text-white">{oficina.localizacao}</p>
+              </div>
+            </div>
+          )}
+
+          {oficina.avaliacao !== undefined && oficina.avaliacao > 0 && (
+            <div className="mb-6">
+              <div className="bg-black/60 rounded-xl p-4 border border-cyan-500/20">
+                <p className="text-cyan-400 font-semibold mb-1">Avaliação</p>
+                <div className="flex items-center gap-2">
+                  <span className="text-white text-xl font-bold">{oficina.avaliacao.toFixed(1)}</span>
+                  <div className="flex text-yellow-400">
+                    {[...Array(5)].map((_, i) => (
+                      <span key={i}>
+                        {i < Math.floor(oficina.avaliacao || 0) ? '★' : '☆'}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold text-white mb-4">Serviços Oferecidos</h2>
+            {loadingServicos ? (
+              <p className="text-white/60">Carregando serviços...</p>
+            ) : servicos.length > 0 ? (
+              <div className="grid md:grid-cols-2 gap-4">
+                {servicos.map((servico) => (
+                  <div 
+                    key={servico.id}
+                    className="bg-black/60 rounded-xl p-4 border border-cyan-500/20 hover:border-cyan-400/40 transition-all"
+                  >
+                    <h3 className="text-white font-semibold text-lg mb-2">{servico.nome}</h3>
+                    {servico.descricao && (
+                      <p className="text-white/80 text-sm">{servico.descricao}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-white/60">Nenhum serviço cadastrado para esta oficina.</p>
             )}
           </div>
 
@@ -125,14 +184,6 @@ export default function OficinaDetalhes() {
             >
               Voltar
             </Button>
-            {oficina.telefone && (
-              <a 
-                href={`tel:${oficina.telefone}`}
-                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-semibold hover:from-blue-500 hover:to-cyan-400 transition-all"
-              >
-                Ligar
-              </a>
-            )}
           </div>
         </div>
       </div>
