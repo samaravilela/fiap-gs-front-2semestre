@@ -63,14 +63,6 @@ export default function Footer({
                 🛡️ Proteção Center - EPIs
               </a>
             </div>
-            <div className="mt-4 pt-4 border-t border-cyan-500/30">
-              <h3 className="font-semibold text-white mb-2">Eventos</h3>
-              <ul className="space-y-1">
-                <li><Link to="/evento-imersao" className="text-white/80 hover:text-white hover:underline">Imersão Profissional</Link></li>
-                <li><Link to="/eventos-presenciais" className="text-white/80 hover:text-white hover:underline">Eventos Presenciais</Link></li>
-                <li><Link to="/vendas-nova-turma" className="text-white/80 hover:text-white hover:underline">Nova Turma</Link></li>
-              </ul>
-            </div>
           </div>
         )}
       </div>

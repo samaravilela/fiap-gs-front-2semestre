@@ -2,14 +2,11 @@ import { useState, useEffect } from 'react'
 import { tutoresService } from '../services/tutoresService'
 import type { Tutor } from '../services/tutoresService'
 import Button from '../components/Button'
-import TutorForm from './TutorForm'
 
 export default function ContatoTutores() {
   const [tutores, setTutores] = useState<Tutor[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [showForm, setShowForm] = useState(false)
-  const [editingTutor, setEditingTutor] = useState<Tutor | null>(null)
 
   useEffect(() => {
     carregarTutores()
@@ -29,21 +26,6 @@ export default function ContatoTutores() {
       setError('Erro ao conectar com o servidor')
     } finally {
       setLoading(false)
-    }
-  }
-
-  const handleDeletar = async (id: number) => {
-    if (!confirm('Tem certeza que deseja deletar este tutor?')) return
-    
-    try {
-      const response = await tutoresService.deletar(id)
-      if (response.status === 204 || response.status === 200) {
-        await carregarTutores()
-      } else {
-        alert(response.message || 'Erro ao deletar tutor')
-      }
-    } catch (err) {
-      alert('Erro ao deletar tutor')
     }
   }
 
@@ -125,21 +107,6 @@ export default function ContatoTutores() {
                     >
                       Enviar E-mail
                     </a>
-                    <button
-                      onClick={() => {
-                        setEditingTutor(tutor)
-                        setShowForm(true)
-                      }}
-                      className="px-4 btn btn-secondary py-3 hover:opacity-90 transition-opacity"
-                    >
-                      Editar
-                    </button>
-                    <button
-                      onClick={() => tutor.id && handleDeletar(tutor.id)}
-                      className="px-4 btn btn-secondary py-3 hover:opacity-90 transition-opacity"
-                    >
-                      Deletar
-                    </button>
                   </div>
                 </div>
               ))}
@@ -162,20 +129,6 @@ export default function ContatoTutores() {
           </p>
         </div>
 
-        {showForm && (
-          <TutorForm 
-            tutor={editingTutor}
-            onClose={() => {
-              setShowForm(false)
-              setEditingTutor(null)
-            }}
-            onSuccess={() => {
-              setShowForm(false)
-              setEditingTutor(null)
-              carregarTutores()
-            }}
-          />
-        )}
       </div>
     </section>
   )
