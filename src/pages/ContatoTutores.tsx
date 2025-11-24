@@ -79,7 +79,7 @@ export default function ContatoTutores() {
                     </div>
                   </div>
 
-                  <div className="space-y-3 mb-6">
+                  <div className="space-y-3">
                     <div className="flex items-center gap-3 text-white/90">
                       <span className="text-xl">📧</span>
                       <a 
@@ -98,15 +98,6 @@ export default function ContatoTutores() {
                         {tutor.telefone}
                       </a>
                     </div>
-                  </div>
-
-                  <div className="flex gap-3">
-                    <a
-                      href={`mailto:${tutor.email}?subject=Contato via Zyntra HE`}
-                      className="flex-1 btn btn-primary py-3 text-center hover:opacity-90 transition-opacity"
-                    >
-                      Enviar E-mail
-                    </a>
                   </div>
                 </div>
               ))}

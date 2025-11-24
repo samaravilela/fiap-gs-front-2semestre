@@ -39,8 +39,6 @@ export default function Footer({
               <li><Link to="/agendar-mentoria" className="text-white/80 hover:text-white hover:underline">Agendar Mentoria</Link></li>
               <li><Link to="/reagendar-mentoria" className="text-white/80 hover:text-white hover:underline">Reagendar Mentoria</Link></li>
               <li><Link to="/contato-tutores" className="text-white/80 hover:text-white hover:underline">Contato Tutores</Link></li>
-              <li><Link to="/setor-financeiro" className="text-white/80 hover:text-white hover:underline">Setor Financeiro</Link></li>
-              <li><Link to="/suporte-pedagogico" className="text-white/80 hover:text-white hover:underline">Suporte Pedagógico</Link></li>
             </ul>
           </div>
         )}
