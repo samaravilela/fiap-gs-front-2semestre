@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 type FooterProps = {
   showContactInfo?: boolean
   showPlatformLinks?: boolean
@@ -24,21 +26,21 @@ export default function Footer({
           <div>
             <h3 className="font-semibold text-white">Plataforma</h3>
             <ul className="mt-2 space-y-1">
-              <li><a href="/cursos" className="text-white/80 hover:text-white hover:underline">Cursos</a></li>
-              <li><a href="/features" className="text-white/80 hover:text-white hover:underline">Serviços</a></li>
-              <li><a href="/mapa-recarga" className="text-white/80 hover:text-white hover:underline">Mapa de Recarga</a></li>
-              <li><a href="/oficinas" className="text-white/80 hover:text-white hover:underline">Oficinas</a></li>
-              <li><a href="/faq" className="text-white/80 hover:text-white hover:underline">FAQ</a></li>
-              <li><a href="/equipe" className="text-white/80 hover:text-white hover:underline">Equipe</a></li>
+              <li><Link to="/cursos" className="text-white/80 hover:text-white hover:underline">Cursos</Link></li>
+              <li><Link to="/features" className="text-white/80 hover:text-white hover:underline">Serviços</Link></li>
+              <li><Link to="/mapa-recarga" className="text-white/80 hover:text-white hover:underline">Mapa de Recarga</Link></li>
+              <li><Link to="/oficinas" className="text-white/80 hover:text-white hover:underline">Oficinas</Link></li>
+              <li><Link to="/faq" className="text-white/80 hover:text-white hover:underline">FAQ</Link></li>
+              <li><Link to="/equipe" className="text-white/80 hover:text-white hover:underline">Equipe</Link></li>
             </ul>
             <h3 className="font-semibold text-white mt-6">Suporte e Contato</h3>
             <ul className="mt-2 space-y-1">
-              <li><a href="/suporte" className="text-white/80 hover:text-white hover:underline">Suporte</a></li>
-              <li><a href="/agendar-mentoria" className="text-white/80 hover:text-white hover:underline">Agendar Mentoria</a></li>
-              <li><a href="/reagendar-mentoria" className="text-white/80 hover:text-white hover:underline">Reagendar Mentoria</a></li>
-              <li><a href="/contato-tutores" className="text-white/80 hover:text-white hover:underline">Contato Tutores</a></li>
-              <li><a href="/setor-financeiro" className="text-white/80 hover:text-white hover:underline">Setor Financeiro</a></li>
-              <li><a href="/suporte-pedagogico" className="text-white/80 hover:text-white hover:underline">Suporte Pedagógico</a></li>
+              <li><Link to="/suporte" className="text-white/80 hover:text-white hover:underline">Suporte</Link></li>
+              <li><Link to="/agendar-mentoria" className="text-white/80 hover:text-white hover:underline">Agendar Mentoria</Link></li>
+              <li><Link to="/reagendar-mentoria" className="text-white/80 hover:text-white hover:underline">Reagendar Mentoria</Link></li>
+              <li><Link to="/contato-tutores" className="text-white/80 hover:text-white hover:underline">Contato Tutores</Link></li>
+              <li><Link to="/setor-financeiro" className="text-white/80 hover:text-white hover:underline">Setor Financeiro</Link></li>
+              <li><Link to="/suporte-pedagogico" className="text-white/80 hover:text-white hover:underline">Suporte Pedagógico</Link></li>
             </ul>
           </div>
         )}
@@ -64,9 +66,9 @@ export default function Footer({
             <div className="mt-4 pt-4 border-t border-cyan-500/30">
               <h3 className="font-semibold text-white mb-2">Eventos</h3>
               <ul className="space-y-1">
-                <li><a href="/evento-imersao" className="text-white/80 hover:text-white hover:underline">Imersão Profissional</a></li>
-                <li><a href="/eventos-presenciais" className="text-white/80 hover:text-white hover:underline">Eventos Presenciais</a></li>
-                <li><a href="/vendas-nova-turma" className="text-white/80 hover:text-white hover:underline">Nova Turma</a></li>
+                <li><Link to="/evento-imersao" className="text-white/80 hover:text-white hover:underline">Imersão Profissional</Link></li>
+                <li><Link to="/eventos-presenciais" className="text-white/80 hover:text-white hover:underline">Eventos Presenciais</Link></li>
+                <li><Link to="/vendas-nova-turma" className="text-white/80 hover:text-white hover:underline">Nova Turma</Link></li>
               </ul>
             </div>
           </div>
