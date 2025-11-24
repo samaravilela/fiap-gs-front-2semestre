@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { usuariosService } from '../services/usuariosService'
 
 interface User {
   id: string
@@ -44,7 +45,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error('Senha deve ter no mínimo 6 caracteres')
       }
 
-      const { usuariosService } = await import('../services/usuariosService')
       const response = await usuariosService.login({ 
         email: email.trim(), 
         senha: password 
